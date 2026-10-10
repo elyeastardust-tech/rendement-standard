@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Rendement Standard & Bonification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Modern Design System & Theme CSS Variables */
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #111827;
+            --bg-card-sub: #1f2937;
+            --border-color: #374151;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-primary: #f97316;
+            --accent-secondary: #f59e0b;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+            --input-bg: #1f2937;
+        }
+
+        /* 20 Preset Themes */
+        [data-theme="sombre-industriel"] {
+            --bg-main: #0b0f19; --bg-card: #111827; --bg-card-sub: #1f2937; --border-color: #374151;
+            --text-main: #f9fafb; --text-muted: #9ca3af; --accent-primary: #ea580c; --accent-secondary: #d97706;
+        }
+        [data-theme="bleu-ocean"] {
+            --bg-main: #0b192c; --bg-card: #1e3e62; --bg-card-sub: #000000; --border-color: #38bdf8;
+            --text-main: #f0f9ff; --text-muted: #93c5fd; --accent-primary: #38bdf8; --accent-secondary: #0284c7;
+        }
+        [data-theme="emeraude"] {
+            --bg-main: #022c22; --bg-card: #064e3b; --bg-card-sub: #042f2e; --border-color: #10b981;
+            --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent-primary: #10b981; --accent-secondary: #059669;
+        }
+        [data-theme="cyberpunk"] {
+            --bg-main: #180128; --bg-card: #28023d; --bg-card-sub: #3b0754; --border-color: #f43f5e;
+            --text-main: #fff1f2; --text-muted: #fda4af; --accent-primary: #f43f5e; --accent-secondary: #06b6d4;
+        }
+        [data-theme="neon-violet"] {
+            --bg-main: #0f051d; --bg-card: #1c0b36; --bg-card-sub: #2d1254; --border-color: #a855f7;
+            --text-main: #faf5ff; --text-muted: #c084fc; --accent-primary: #a855f7; --accent-secondary: #ec4899;
+        }
+        [data-theme="sunset"] {
+            --bg-main: #2a0813; --bg-card: #42101e; --bg-card-sub: #5c1828; --border-color: #f97316;
+            --text-main: #fff7ed; --text-muted: #fdba74; --accent-primary: #f97316; --accent-secondary: #e11d48;
+        }
+        [data-theme="papyrus"] {
+            --bg-main: #f4f1ea; --bg-card: #e5e0d8; --bg-card-sub: #d6cfc4; --border-color: #a89f91;
+            --text-main: #292524; --text-muted: #57534e; --accent-primary: #b45309; --accent-secondary: #78350f;
+            --input-bg: #d6cfc4;
+        }
+        [data-theme="gold"] {
+            --bg-main: #14110c; --bg-card: #241e15; --bg-card-sub: #362d20; --border-color: #eab308;
+            --text-main: #fefce8; --text-muted: #fef08a; --accent-primary: #eab308; --accent-secondary: #ca8a04;
+        }
+        [data-theme="minimaliste-light"] {
+            --bg-main: #f8fafc; --bg-card: #ffffff; --bg-card-sub: #f1f5f9; --border-color: #cbd5e1;
+            --text-main: #0f172a; --text-muted: #64748b; --accent-primary: #2563eb; --accent-secondary: #0284c7;
+            --input-bg: #f1f5f9;
+        }
+        [data-theme="nordique"] {
+            --bg-main: #2e3440; --bg-card: #3b4252; --bg-card-sub: #434c5e; --border-color: #88c0d0;
+            --text-main: #eceff4; --text-muted: #d8dee9; --accent-primary: #88c0d0; --accent-secondary: #81a1c1;
+        }
+        [data-theme="matrice"] {
+            --bg-main: #000d03; --bg-card: #001f07; --bg-card-sub: #00330c; --border-color: #22c55e;
+            --text-main: #f0fdf4; --text-muted: #86efac; --accent-primary: #22c55e; --accent-secondary: #16a34a;
+        }
+        [data-theme="bordeaux"] {
+            --bg-main: #1a0509; --bg-card: #2d0b12; --bg-card-sub: #42121b; --border-color: #9f1239;
+            --text-main: #fff1f2; --text-muted: #fecdd3; --accent-primary: #e11d48; --accent-secondary: #be123c;
+        }
+        [data-theme="ambre"] {
+            --bg-main: #1c1002; --bg-card: #301c05; --bg-card-sub: #452a0a; --border-color: #d97706;
+            --text-main: #fffbeb; --text-muted: #fde68a; --accent-primary: #d97706; --accent-secondary: #b45309;
+        }
+        [data-theme="cobalt"] {
+            --bg-main: #020617; --bg-card: #0f172a; --bg-card-sub: #1e293b; --border-color: #2563eb;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --accent-primary: #3b82f6; --accent-secondary: #1d4ed8;
+        }
+        [data-theme="pastel"] {
+            --bg-main: #2d2b38; --bg-card: #3a3747; --bg-card-sub: #484558; --border-color: #f472b6;
+            --text-main: #fdf2f8; --text-muted: #fbcfe8; --accent-primary: #f472b6; --accent-secondary: #38bdf8;
+        }
+        [data-theme="synthwave"] {
+            --bg-main: #1a102f; --bg-card: #261745; --bg-card-sub: #35215e; --border-color: #f43f5e;
+            --text-main: #fff1f2; --text-muted: #f472b6; --accent-primary: #ec4899; --accent-secondary: #8b5cf6;
+        }
+        [data-theme="camouflage"] {
+            --bg-main: #121611; --bg-card: #1f261d; --bg-card-sub: #2d382b; --border-color: #65a30d;
+            --text-main: #f7fee7; --text-muted: #bef264; --accent-primary: #65a30d; --accent-secondary: #4d7c0f;
+        }
+        [data-theme="foret"] {
+            --bg-main: #051a10; --bg-card: #0b2e1d; --bg-card-sub: #12422b; --border-color: #15803d;
+            --text-main: #f0fdf4; --text-muted: #86efac; --accent-primary: #16a34a; --accent-secondary: #15803d;
+        }
+        [data-theme="ardoise"] {
+            --bg-main: #0f172a; --bg-card: #1e293b; --bg-card-sub: #334155; --border-color: #64748b;
+            --text-main: #f8fafc; --text-muted: #cbd5e1; --accent-primary: #0284c7; --accent-secondary: #475569;
+        }
+        [data-theme="high-contrast"] {
+            --bg-main: #000000; --bg-card: #111111; --bg-card-sub: #222222; --border-color: #ffffff;
+            --text-main: #ffffff; --text-muted: #e5e5e5; --accent-primary: #ffff00; --accent-secondary: #00ffff;
+            --input-bg: #222222;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+        }
+
+        .theme-card-sub {
+            background-color: var(--bg-card-sub);
+            border-color: var(--border-color);
+        }
+
+        .theme-input {
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+
+        .theme-text-muted { color: var(--text-muted); }
+        .theme-accent { color: var(--accent-primary); }
+        .theme-bg-accent { background-color: var(--accent-primary); }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body class="min-h-screen font-sans pb-16 antialiased">
+
+    <div id="app" class="max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-6">
+
+        <!-- Top Header & Controls -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-700/50 pb-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold theme-accent tracking-wide flex items-center gap-2">
+                    <i class="fa-solid fa-calculator font-mono"></i> Calculateur de Rendement & Bonis
+                </h1>
+                <p class="theme-text-muted text-xs sm:text-sm mt-1">
+                    Calculateur de performance, dépilage au Monte-Charge et gestion des bonifications ($)
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Theme Selector -->
+                <div class="theme-card-sub border rounded-lg p-2 flex items-center gap-2 text-xs sm:text-sm shadow-inner">
+                    <i class="fa-solid fa-palette theme-accent"></i>
+                    <label for="themeSelect" class="theme-text-muted font-medium hidden sm:inline">Thème :</label>
+                    <select id="themeSelect" onchange="changeTheme(this.value)" class="theme-input font-semibold px-2 py-1 rounded border focus:outline-none text-xs">
+                        <option value="sombre-industriel">1. Sombre Industriel</option>
+                        <option value="bleu-ocean">2. Bleu Océan</option>
+                        <option value="emeraude">3. Émeraude</option>
+                        <option value="cyberpunk">4. Cyberpunk</option>
+                        <option value="neon-violet">5. Néon Violet</option>
+                        <option value="sunset">6. Sunset</option>
+                        <option value="papyrus">7. Papyrus</option>
+                        <option value="gold">8. Gold</option>
+                        <option value="minimaliste-light">9. Minimaliste Light</option>
+                        <option value="nordique">10. Nordique</option>
+                        <option value="matrice">11. Matrice</option>
+                        <option value="bordeaux">12. Bordeaux</option>
+                        <option value="ambre">13. Ambre</option>
+                        <option value="cobalt">14. Cobalt</option>
+                        <option value="pastel">15. Pastel</option>
+                        <option value="synthwave">16. Synthwave</option>
+                        <option value="camouflage">17. Camouflage</option>
+                        <option value="foret">18. Forêt</option>
+                        <option value="ardoise">19. Ardoise</option>
+                        <option value="high-contrast">20. High Contrast</option>
+                    </select>
+                </div>
+
+                <!-- Date Picker -->
+                <div class="theme-card-sub border rounded-lg p-2 flex items-center gap-2 text-xs sm:text-sm shadow-inner">
+                    <i class="fa-solid fa-calendar-days theme-accent"></i>
+                    <input type="date" id="weekStartDate" onchange="updateWeekRange()" class="theme-input font-semibold px-2 py-1 rounded border focus:outline-none text-xs">
+                    <span class="theme-text-muted text-xs hidden sm:inline" id="weekRangeDisplay">au Samedi</span>
+                </div>
+
+                <!-- Hourly Rate -->
+                <div class="theme-card-sub border rounded-lg p-2 flex items-center gap-2 text-xs sm:text-sm shadow-inner">
+                    <i class="fa-solid fa-dollar-sign text-emerald-400"></i>
+                    <label for="hourlyRate" class="theme-text-muted font-medium">Taux ($/h) :</label>
+                    <input type="number" id="hourlyRate" step="0.5" placeholder="25.00" oninput="saveAndRecalculate()" class="w-16 sm:w-20 theme-input font-bold px-2 py-1 rounded border text-right focus:outline-none text-xs sm:text-sm">
+                </div>
+            </div>
+        </header>
+
+        <!-- Weekly Summary Dashboard -->
+        <section class="theme-card border-2 rounded-xl p-4 sm:p-6 shadow-2xl space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                
+                <!-- Performance Statistics -->
+                <div class="lg:col-span-8 space-y-4 flex flex-col justify-between">
+                    <div class="border-b border-gray-700/50 pb-2 flex items-center justify-between">
+                        <h2 class="text-base sm:text-lg font-bold theme-accent flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line"></i> Bilan Hebdomadaire & Bonification
+                        </h2>
+                        <span class="text-xs theme-text-muted">Plafonné à 120% max (Temps de production pur)</span>
+                    </div>
+
+                    <!-- Assemblage Summary Row -->
+                    <div class="theme-card-sub p-4 rounded-xl border flex flex-wrap items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="theme-text-muted text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span> Assemblage
+                            </div>
+                            <div class="flex items-baseline gap-3">
+                                <span id="assemblageAvg" class="text-2xl sm:text-3xl font-black theme-accent">---%</span>
+                                <span id="assemblageHours" class="text-xs theme-text-muted">0h 00m produites</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 sm:gap-6">
+                            <div class="text-right">
+                                <div class="text-[11px] theme-text-muted font-medium">Boni d'heures</div>
+                                <div id="assemblageBonusHours" class="text-sm sm:text-base font-bold text-orange-400">+0.00 h</div>
+                            </div>
+                            <div class="text-right theme-card px-3 py-2 rounded-lg border">
+                                <div class="text-[11px] text-emerald-400 font-medium">Gain $</div>
+                                <div id="assemblageGain" class="text-base sm:text-lg font-extrabold text-emerald-400">0.00 $</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monte-Charge Summary Row -->
+                    <div class="theme-card-sub p-4 rounded-xl border flex flex-wrap items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="theme-text-muted text-xs font-semibold uppercase tracking-wider flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Monte-Charge
+                                </div>
+                                <span id="mcCasesSummary" class="text-[10px] text-amber-400 font-normal bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-800/40">0 caisses (+0m std)</span>
+                            </div>
+                            <div class="flex items-baseline gap-3">
+                                <span id="monteChargeAvg" class="text-2xl sm:text-3xl font-black text-amber-400">---%</span>
+                                <span id="monteChargeHours" class="text-xs theme-text-muted">0h 00m produites</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 sm:gap-6">
+                            <div class="text-right">
+                                <div class="text-[11px] theme-text-muted font-medium">Boni d'heures</div>
+                                <div id="monteChargeBonusHours" class="text-sm sm:text-base font-bold text-amber-300">+0.00 h</div>
+                            </div>
+                            <div class="text-right theme-card px-3 py-2 rounded-lg border">
+                                <div class="text-[11px] text-emerald-400 font-medium">Gain $</div>
+                                <div id="monteChargeGain" class="text-base sm:text-lg font-extrabold text-emerald-400">0.00 $</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Cumulative Total -->
+                    <div class="theme-card-sub p-3 rounded-lg border border-emerald-500/40 flex items-center justify-between text-xs sm:text-sm">
+                        <span class="font-bold theme-text-main flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-emerald-400"></i> GAIN TOTAL CUMULÉ :
+                        </span>
+                        <div class="flex items-baseline gap-3">
+                            <span id="totalBonusHours" class="font-bold theme-accent text-sm sm:text-base">+0.00 h de bonis</span>
+                            <span id="totalGainDollars" class="font-black text-emerald-400 text-lg sm:text-xl">0.00 $</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 95% Target & Catch-up Simulator Side Panel -->
+                <div class="lg:col-span-4 theme-card-sub p-4 rounded-xl border flex flex-col justify-between space-y-4">
+                    <div>
+                        <h3 class="text-xs font-bold theme-accent uppercase tracking-wider flex items-center gap-1.5 mb-3">
+                            <i class="fa-solid fa-bullseye"></i> Target 95% & Simulator (110%)
+                        </h3>
+
+                        <!-- Assemblage Status Card -->
+                        <div id="assemblageStatusCard" class="p-3 rounded-lg border theme-card text-xs space-y-1 mb-2">
+                            <div class="flex justify-between font-bold">
+                                <span>Assemblage :</span>
+                                <span id="assemblageStatusBadge" class="theme-text-muted">En attente</span>
+                            </div>
+                            <div id="assemblageCatchupText" class="text-[11px] theme-text-muted">
+                                Aucune donnée enregistrée.
+                            </div>
+                        </div>
+
+                        <!-- Monte-Charge Status Card -->
+                        <div id="monteChargeStatusCard" class="p-3 rounded-lg border theme-card text-xs space-y-1">
+                            <div class="flex justify-between font-bold">
+                                <span>Monte-Charge :</span>
+                                <span id="monteChargeStatusBadge" class="theme-text-muted">En attente</span>
+                            </div>
+                            <div id="monteChargeCatchupText" class="text-[11px] theme-text-muted">
+                                Aucune donnée enregistrée.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strategy Tip Box -->
+                    <div class="theme-card border border-amber-500/30 p-3 rounded-lg text-[11px] space-y-1">
+                        <div class="font-bold text-amber-400 flex items-center gap-1">
+                            <i class="fa-solid fa-boxes-stacked"></i> Astuce Dépilage (5s / caisse) :
+                        </div>
+                        <p class="leading-relaxed theme-text-muted">
+                            • <strong>Rendement &lt; 95% :</strong> Activez le dépilage pour remonter la moyenne au seuil.<br>
+                            • <strong>Rendement &ge; 120% :</strong> Désactivez le dépilage si vous êtes déjà au bonis maximal.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Daily Entry Cards Grid -->
+        <main id="daysContainer" class="space-y-6">
+            <!-- Rendered via JavaScript -->
+        </main>
+    </div>
+
+    <script>
+        const DAYS_OF_WEEK = [
+            { id: 'dimanche', name: 'Dimanche' },
+            { id: 'lundi', name: 'Lundi' },
+            { id: 'mardi', name: 'Mardi' },
+            { id: 'mercredi', name: 'Mercredi' },
+            { id: 'jeudi', name: 'Jeudi' },
+            { id: 'vendredi', name: 'Vendredi' },
+            { id: 'samedi', name: 'Samedi' }
+        ];
+
+        const BONIFIED_TASKS = ['Assemblage', 'Monte-Charge'];
+        const NON_BONIFIED_TASKS = ['Récupérateur', 'Réunion', 'Toyota', 'Chargement'];
+
+        let appData = {
+            theme: 'sombre-industriel',
+            weekStartDate: getSunday(new Date()).toISOString().split('T')[0],
+            hourlyRate: 25.00,
+            days: {}
+        };
+
+        DAYS_OF_WEEK.forEach(day => {
+            appData.days[day.id] = {
+                plannedHours: 8,
+                break31Count: 1, 
+                break17Count: 1, 
+                bonifiedTasks: [],
+                nonBonifiedTasks: []
+            };
+        });
+
+        function getSunday(d) {
+            const date = new Date(d);
+            const day = date.getDay();
+            const diff = date.getDate() - day;
+            return new Date(date.setDate(diff));
+        }
+
+        function formatMinutesToHours(mins) {
+            const absolute = Math.abs(mins);
+            const h = Math.floor(absolute / 60);
+            const m = Math.round(absolute % 60);
+            return `${h}h ${m < 10 ? '0' : ''}${m}m`;
+        }
+
+        function convertToMinutes(val, unit) {
+            const num = parseFloat(val) || 0;
+            return unit === 'hours' ? Math.round(num * 60) : num;
+        }
+
+        window.onload = function() {
+            loadFromLocalStorage();
+            applyTheme(appData.theme || 'sombre-industriel');
+            initializeWeekPicker();
+            renderDays();
+            recalculateAll();
+        };
+
+        function changeTheme(themeKey) {
+            appData.theme = themeKey;
+            applyTheme(themeKey);
+            saveToLocalStorage();
+        }
+
+        function applyTheme(themeKey) {
+            document.documentElement.setAttribute('data-theme', themeKey);
+            const sel = document.getElementById('themeSelect');
+            if (sel) sel.value = themeKey;
+        }
+
+        function initializeWeekPicker() {
+            document.getElementById('weekStartDate').value = appData.weekStartDate;
+            document.getElementById('hourlyRate').value = appData.hourlyRate || '';
+            updateWeekRangeDisplay();
+        }
+
+        function updateWeekRange() {
+            const inputVal = document.getElementById('weekStartDate').value;
+            if (inputVal) {
+                const selectedDate = new Date(inputVal + 'T00:00:00');
+                const sunday = getSunday(selectedDate);
+                appData.weekStartDate = sunday.toISOString().split('T')[0];
+                document.getElementById('weekStartDate').value = appData.weekStartDate;
+                updateWeekRangeDisplay();
+                saveAndRecalculate();
+            }
+        }
+
+        function updateWeekRangeDisplay() {
+            const start = new Date(appData.weekStartDate + 'T00:00:00');
+            const end = new Date(start);
+            end.setDate(end.getDate() + 6);
+            
+            const formatOpt = { day: 'numeric', month: 'short' };
+            const startStr = start.toLocaleDateString('fr-FR', formatOpt);
+            const endStr = end.toLocaleDateString('fr-FR', formatOpt);
+
+            document.getElementById('weekRangeDisplay').innerText = `du ${startStr} au ${endStr}`;
+        }
+
+        function renderDays() {
+            const container = document.getElementById('daysContainer');
+            container.innerHTML = '';
+
+            DAYS_OF_WEEK.forEach(day => {
+                const dayData = appData.days[day.id];
+                const card = document.createElement('div');
+                card.className = "theme-card border rounded-xl p-4 sm:p-5 shadow-lg relative transition-all duration-200";
+                
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-700/50 pb-3 mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg sm:text-xl font-bold theme-accent tracking-wide">${day.name}</span>
+                            <div class="flex items-center gap-2 theme-card-sub px-3 py-1 rounded-lg border text-xs">
+                                <span class="theme-text-muted">Planifié :</span>
+                                <input type="number" step="0.5" min="0" value="${dayData.plannedHours}" 
+                                    onchange="updatePlannedHours('${day.id}', this.value)" 
+                                    class="w-12 sm:w-14 theme-input font-bold text-center rounded border focus:outline-none px-1 py-0.5">
+                                <span class="theme-text-muted">h</span>
+                            </div>
+                        </div>
+
+                        <!-- Daily Bonus Badge Display -->
+                        <div id="dayBonusBadge-${day.id}" class="bg-emerald-950/40 border border-emerald-500/50 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-extrabold flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-gift"></i>
+                            <span>Bonis Jour : 0.00 h (0.00 $)</span>
+                        </div>
+
+                        <!-- Pauses Selector -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="adjustPause('${day.id}', 31, 1)" class="theme-card-sub hover:opacity-80 border text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
+                                <i class="fa-solid fa-utensils theme-accent"></i> Repas 31m (${dayData.break31Count})
+                            </button>
+                            <button onclick="adjustPause('${day.id}', 17, 1)" class="theme-card-sub hover:opacity-80 border text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
+                                <i class="fa-solid fa-mug-hot text-amber-400"></i> Pause 17m (${dayData.break17Count})
+                            </button>
+                            <button onclick="resetPauses('${day.id}')" class="theme-text-muted hover:text-red-400 text-xs px-1.5 py-1" title="Réinitialiser les pauses">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Day Target Validation Banner -->
+                    <div id="dayValidationBanner-${day.id}" class="mb-4 p-2.5 rounded-lg text-xs font-semibold flex items-center justify-between border">
+                        <!-- Filled dynamically -->
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <!-- Tâches à Rendement -->
+                        <div class="theme-card-sub p-3.5 rounded-xl border space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-bold theme-accent uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-star"></i> Tâches à Rendement
+                                </h4>
+                                <button onclick="addBonifiedTask('${day.id}')" class="theme-bg-accent text-white text-xs px-2.5 py-1 rounded font-medium flex items-center gap-1 transition shadow hover:opacity-90">
+                                    <i class="fa-solid fa-plus text-[10px]"></i> Ajouter
+                                </button>
+                            </div>
+
+                            <div id="bonifiedList-${day.id}" class="space-y-3"></div>
+                        </div>
+
+                        <!-- Tâches Non Bonifiées -->
+                        <div class="theme-card-sub p-3.5 rounded-xl border space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-bold theme-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-business-time"></i> Tâches non bonifiées
+                                </h4>
+                                <button onclick="addNonBonifiedTask('${day.id}')" class="theme-card hover:opacity-80 text-xs px-2.5 py-1 rounded font-medium flex items-center gap-1 transition border">
+                                    <i class="fa-solid fa-plus text-[10px]"></i> Ajouter
+                                </button>
+                            </div>
+
+                            <div id="nonBonifiedList-${day.id}" class="space-y-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Day Footer Summary -->
+                    <div class="mt-4 pt-3 border-t border-gray-700/50 flex flex-wrap items-center justify-between gap-2 text-xs theme-text-muted">
+                        <div id="dayTotalHours-${day.id}" class="font-medium">
+                            Total enregistré : 0h 00m
+                        </div>
+                        <div id="daySummary-${day.id}" class="font-medium flex items-center gap-4">
+                            <span>Assemblage : <strong class="theme-accent" id="dayAss-${day.id}">---%</strong></span>
+                            <span>Monte-Charge : <strong class="text-amber-400" id="dayMc-${day.id}">---%</strong></span>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+                renderDayTasks(day.id);
+            });
+        }
+
+        function renderDayTasks(dayId) {
+            const dayData = appData.days[dayId];
+
+            // Render Bonified Tasks
+            const bonifiedContainer = document.getElementById(`bonifiedList-${dayId}`);
+            if (dayData.bonifiedTasks.length === 0) {
+                bonifiedContainer.innerHTML = `<p class="text-xs theme-text-muted italic py-2 text-center">Aucune tâche enregistrée.</p>`;
+            } else {
+                bonifiedContainer.innerHTML = dayData.bonifiedTasks.map((t, idx) => {
+                    const unit = t.unit || 'hours';
+                    const duration = t.durationValue !== undefined ? t.durationValue : 0;
+                    const pct = t.performancePct !== undefined ? t.performancePct : 100;
+                    const isMonteCharge = t.name === 'Monte-Charge';
+                    const casesCount = t.casesCount || 0;
+                    const includeCases = t.includeCases !== undefined ? t.includeCases : true;
+                    const addedMinutesFromCases = (casesCount * 5) / 60;
+
+                    return `
+                        <div class="theme-card border p-3 rounded-lg text-xs space-y-2.5 shadow-sm">
+                            <div class="flex items-center justify-between gap-2">
+                                <select onchange="updateBonifiedTask('${dayId}', ${idx}, 'name', this.value)" class="theme-input font-bold rounded border px-2 py-1 focus:outline-none text-xs">
+                                    ${BONIFIED_TASKS.map(opt => `<option value="${opt}" ${opt === t.name ? 'selected' : ''}>${opt}</option>`).join('')}
+                                </select>
+
+                                <div class="flex items-center theme-card-sub rounded p-0.5 border">
+                                    <button onclick="toggleBonifiedUnit('${dayId}', ${idx}, 'hours')" class="px-2 py-0.5 rounded text-[10px] font-bold ${unit === 'hours' ? 'theme-bg-accent text-white' : 'theme-text-muted'}">
+                                        Heures
+                                    </button>
+                                    <button onclick="toggleBonifiedUnit('${dayId}', ${idx}, 'minutes')" class="px-2 py-0.5 rounded text-[10px] font-bold ${unit === 'minutes' ? 'theme-bg-accent text-white' : 'theme-text-muted'}">
+                                        Min
+                                    </button>
+                                </div>
+
+                                <button onclick="removeBonifiedTask('${dayId}', ${idx})" class="theme-text-muted hover:text-red-400 px-1 transition">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[10px] theme-text-muted block mb-1">Durée (${unit === 'hours' ? 'Heures' : 'Min'}) :</label>
+                                    <input type="number" step="${unit === 'hours' ? '0.01' : '1'}" min="0" value="${duration}" placeholder="${unit === 'hours' ? '6.5' : '390'}"
+                                        oninput="updateBonifiedTask('${dayId}', ${idx}, 'durationValue', this.value)" 
+                                        class="w-full theme-input p-1.5 rounded border text-center font-mono focus:outline-none font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] theme-text-muted block mb-1">Rendement (% direct) :</label>
+                                    <input type="number" step="1" min="0" value="${pct}" placeholder="110"
+                                        oninput="updateBonifiedTask('${dayId}', ${idx}, 'performancePct', this.value)" 
+                                        class="w-full theme-input theme-accent p-1.5 rounded border text-center font-mono focus:outline-none font-extrabold">
+                                </div>
+                            </div>
+
+                            ${isMonteCharge ? `
+                                <div class="theme-card-sub p-2 rounded-md border border-amber-500/30 space-y-1.5 mt-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-[10px] font-bold text-amber-400 flex items-center gap-1">
+                                            <i class="fa-solid fa-boxes-stacked"></i> Dépilage Caisses (5s / caisse) :
+                                        </span>
+                                        <span class="text-[10px] font-mono text-amber-300 font-semibold">
+                                            +${addedMinutesFromCases.toFixed(1)} min std
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" min="0" step="1" value="${casesCount}" placeholder="Nb caisses"
+                                            oninput="updateBonifiedTask('${dayId}', ${idx}, 'casesCount', this.value)"
+                                            class="w-1/2 theme-input text-amber-300 p-1 rounded border text-center font-mono text-xs focus:outline-none font-bold">
+                                        
+                                        <label class="flex items-center gap-1.5 text-[10px] theme-text-muted cursor-pointer theme-card px-2 py-1 rounded border">
+                                            <input type="checkbox" ${includeCases ? 'checked' : ''} 
+                                                onchange="updateBonifiedTask('${dayId}', ${idx}, 'includeCases', this.checked)"
+                                                class="rounded border-gray-700 text-amber-500 focus:ring-0">
+                                            <span>Inclure (+${addedMinutesFromCases.toFixed(1)}m)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Render Non-Bonified Tasks
+            const nonBonifiedContainer = document.getElementById(`nonBonifiedList-${dayId}`);
+            if (dayData.nonBonifiedTasks.length === 0) {
+                nonBonifiedContainer.innerHTML = `<p class="text-xs theme-text-muted italic py-2 text-center">Aucune tâche enregistrée.</p>`;
+            } else {
+                nonBonifiedContainer.innerHTML = dayData.nonBonifiedTasks.map((t, idx) => {
+                    const unit = t.unit || 'hours';
+                    const duration = t.durationValue !== undefined ? t.durationValue : 0;
+
+                    return `
+                        <div class="theme-card border p-2.5 rounded-lg text-xs flex items-center justify-between gap-2 shadow-sm">
+                            <select onchange="updateNonBonifiedTask('${dayId}', ${idx}, 'name', this.value)" class="theme-input font-medium rounded border px-2 py-1 focus:outline-none text-xs">
+                                ${NON_BONIFIED_TASKS.map(opt => `<option value="${opt}" ${opt === t.name ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>
+
+                            <div class="flex items-center gap-2">
+                                <input type="number" step="${unit === 'hours' ? '0.01' : '1'}" min="0" value="${duration}" placeholder="${unit === 'hours' ? 'Heures' : 'Min'}"
+                                    oninput="updateNonBonifiedTask('${dayId}', ${idx}, 'durationValue', this.value)" 
+                                    class="w-20 theme-input p-1 rounded border text-center font-mono focus:outline-none font-bold text-xs">
+                                
+                                <div class="flex items-center theme-card-sub rounded p-0.5 border">
+                                    <button onclick="toggleNonBonifiedUnit('${dayId}', ${idx}, 'hours')" class="px-1.5 py-0.5 rounded text-[10px] font-bold ${unit === 'hours' ? 'theme-bg-accent text-white' : 'theme-text-muted'}">H</button>
+                                    <button onclick="toggleNonBonifiedUnit('${dayId}', ${idx}, 'minutes')" class="px-1.5 py-0.5 rounded text-[10px] font-bold ${unit === 'minutes' ? 'theme-bg-accent text-white' : 'theme-text-muted'}">M</button>
+                                </div>
+
+                                <button onclick="removeNonBonifiedTask('${dayId}', ${idx})" class="theme-text-muted hover:text-red-400 ml-1 transition">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function updatePlannedHours(dayId, val) {
+            appData.days[dayId].plannedHours = parseFloat(val) || 0;
+            saveAndRecalculate();
+        }
+
+        function adjustPause(dayId, type, delta) {
+            if (type === 31) appData.days[dayId].break31Count = Math.max(0, appData.days[dayId].break31Count + delta);
+            if (type === 17) appData.days[dayId].break17Count = Math.max(0, appData.days[dayId].break17Count + delta);
+            saveAndRecalculate();
+            renderDays();
+        }
+
+        function resetPauses(dayId) {
+            appData.days[dayId].break31Count = 0;
+            appData.days[dayId].break17Count = 0;
+            saveAndRecalculate();
+            renderDays();
+        }
+
+        function addBonifiedTask(dayId) {
+            appData.days[dayId].bonifiedTasks.push({
+                id: Date.now(),
+                name: 'Assemblage',
+                durationValue: 0,
+                unit: 'hours',
+                performancePct: 100,
+                casesCount: 0,
+                includeCases: true
+            });
+            saveAndRecalculate();
+            renderDayTasks(dayId);
+        }
+
+        function removeBonifiedTask(dayId, idx) {
+            appData.days[dayId].bonifiedTasks.splice(idx, 1);
+            saveAndRecalculate();
+            renderDayTasks(dayId);
+        }
+
+        function toggleBonifiedUnit(dayId, idx, newUnit) {
+            const task = appData.days[dayId].bonifiedTasks[idx];
+            if (task.unit !== newUnit) {
+                if (newUnit === 'minutes') {
+                    task.durationValue = Math.round((parseFloat(task.durationValue) || 0) * 60);
+                } else {
+                    task.durationValue = parseFloat(((parseFloat(task.durationValue) || 0) / 60).toFixed(2));
+                }
+                task.unit = newUnit;
+                saveAndRecalculate();
+                renderDayTasks(dayId);
+            }
+        }
+
+        function updateBonifiedTask(dayId, idx, key, val) {
+            if (key === 'name') {
+                appData.days[dayId].bonifiedTasks[idx].name = val;
+            } else if (key === 'includeCases') {
+                appData.days[dayId].bonifiedTasks[idx].includeCases = !!val;
+            } else {
+                appData.days[dayId].bonifiedTasks[idx][key] = parseFloat(val) || 0;
+            }
+            saveAndRecalculate();
+            updateDayFooter(dayId);
+        }
+
+        function addNonBonifiedTask(dayId) {
+            appData.days[dayId].nonBonifiedTasks.push({
+                id: Date.now(),
+                name: 'Récupérateur',
+                durationValue: 0,
+                unit: 'hours'
+            });
+            saveAndRecalculate();
+            renderDayTasks(dayId);
+        }
+
+        function removeNonBonifiedTask(dayId, idx) {
+            appData.days[dayId].nonBonifiedTasks.splice(idx, 1);
+            saveAndRecalculate();
+            renderDayTasks(dayId);
+        }
+
+        function toggleNonBonifiedUnit(dayId, idx, newUnit) {
+            const task = appData.days[dayId].nonBonifiedTasks[idx];
+            if (task.unit !== newUnit) {
+                if (newUnit === 'minutes') {
+                    task.durationValue = Math.round((parseFloat(task.durationValue) || 0) * 60);
+                } else {
+                    task.durationValue = parseFloat(((parseFloat(task.durationValue) || 0) / 60).toFixed(2));
+                }
+                task.unit = newUnit;
+                saveAndRecalculate();
+                renderDayTasks(dayId);
+            }
+        }
+
+        function updateNonBonifiedTask(dayId, idx, key, val) {
+            if (key === 'name') {
+                appData.days[dayId].nonBonifiedTasks[idx].name = val;
+            } else {
+                appData.days[dayId].nonBonifiedTasks[idx].durationValue = parseFloat(val) || 0;
+            }
+            saveAndRecalculate();
+            updateDayFooter(dayId);
+        }
+
+        function saveAndRecalculate() {
+            const hourlyRateVal = parseFloat(document.getElementById('hourlyRate').value) || 0;
+            appData.hourlyRate = hourlyRateVal;
+            saveToLocalStorage();
+            recalculateAll();
+        }
+
+        function recalculateAll() {
+            let totalAssAllocated = 0, totalAssReal = 0;
+            let totalMcAllocated = 0, totalMcReal = 0;
+            let totalMcCasesCount = 0;
+            let totalMcCasesMins = 0;
+
+            DAYS_OF_WEEK.forEach(day => {
+                const dayData = appData.days[day.id];
+
+                dayData.bonifiedTasks.forEach(t => {
+                    const realMins = convertToMinutes(t.durationValue, t.unit);
+                    const pct = (parseFloat(t.performancePct) || 0) / 100;
+                    
+                    if (t.name === 'Assemblage') {
+                        totalAssAllocated += realMins * pct;
+                        totalAssReal += realMins;
+                    } else if (t.name === 'Monte-Charge') {
+                        let allocatedMins = realMins * pct;
+                        const cases = t.casesCount || 0;
+                        const include = t.includeCases !== undefined ? t.includeCases : true;
+                        const caseMins = (cases * 5) / 60;
+
+                        totalMcCasesCount += cases;
+
+                        if (include && cases > 0) {
+                            allocatedMins += caseMins;
+                            totalMcCasesMins += caseMins;
+                        }
+
+                        totalMcAllocated += allocatedMins;
+                        totalMcReal += realMins;
+                    }
+                });
+
+                updateDayFooter(day.id);
+            });
+
+            // Independent Averages
+            const assAvg = totalAssReal > 0 ? (totalAssAllocated / totalAssReal) * 100 : null;
+            const mcAvg = totalMcReal > 0 ? (totalMcAllocated / totalMcReal) * 100 : null;
+
+            // UI Assemblage
+            document.getElementById('assemblageAvg').innerText = assAvg !== null ? `${assAvg.toFixed(1)}%` : '---%';
+            document.getElementById('assemblageHours').innerText = `${formatMinutesToHours(totalAssReal)} produites`;
+
+            // UI Monte-Charge
+            document.getElementById('monteChargeAvg').innerText = mcAvg !== null ? `${mcAvg.toFixed(1)}%` : '---%';
+            document.getElementById('monteChargeHours').innerText = `${formatMinutesToHours(totalMcReal)} produites`;
+            document.getElementById('mcCasesSummary').innerText = `${totalMcCasesCount} caisses (+${totalMcCasesMins.toFixed(1)}m std)`;
+
+            // Bonus Calculations (100% - 120%)
+            const rate = appData.hourlyRate || 0;
+
+            // Assemblage Bonus
+            let assBonusHours = 0;
+            if (assAvg !== null && assAvg > 100) {
+                const bonusRatio = Math.min(0.20, (assAvg - 100) / 100);
+                assBonusHours = (totalAssReal * bonusRatio) / 60;
+            }
+            const assGainDollars = assBonusHours * rate;
+
+            document.getElementById('assemblageBonusHours').innerText = `+${assBonusHours.toFixed(2)} h`;
+            document.getElementById('assemblageGain').innerText = `${assGainDollars.toFixed(2)} $`;
+
+            // Monte-Charge Bonus
+            let mcBonusHours = 0;
+            if (mcAvg !== null && mcAvg > 100) {
+                const bonusRatio = Math.min(0.20, (mcAvg - 100) / 100);
+                mcBonusHours = (totalMcReal * bonusRatio) / 60;
+            }
+            const mcGainDollars = mcBonusHours * rate;
+
+            document.getElementById('monteChargeBonusHours').innerText = `+${mcBonusHours.toFixed(2)} h`;
+            document.getElementById('monteChargeGain').innerText = `${mcGainDollars.toFixed(2)} $`;
+
+            // Combined Totals
+            const grandTotalBonusHours = assBonusHours + mcBonusHours;
+            const grandTotalDollars = assGainDollars + mcGainDollars;
+
+            document.getElementById('totalBonusHours').innerText = `+${grandTotalBonusHours.toFixed(2)} h de bonis`;
+            document.getElementById('totalGainDollars').innerText = `${grandTotalDollars.toFixed(2)} $`;
+
+            // Update Target Cards
+            updateTaskStatus('assemblage', assAvg, totalAssAllocated, totalAssReal);
+            updateTaskStatus('monteCharge', mcAvg, totalMcAllocated, totalMcReal);
+        }
+
+        function updateTaskStatus(taskKey, avg, allocatedMins, realMins) {
+            const badge = document.getElementById(`${taskKey}StatusBadge`);
+            const text = document.getElementById(`${taskKey}CatchupText`);
+
+            if (avg === null) {
+                badge.innerText = "En attente";
+                badge.className = "theme-text-muted font-bold";
+                text.innerText = "Aucune entrée cette semaine.";
+                return;
+            }
+
+            if (avg >= 95) {
+                badge.innerText = "OK (≥95%)";
+                badge.className = "text-emerald-400 font-bold";
+                text.innerHTML = `<span class="text-emerald-400 font-semibold">Seuil respecté (${avg.toFixed(1)}%)</span>`;
+            } else {
+                badge.innerText = "Alerte (<95%)";
+                badge.className = "text-red-400 font-bold";
+
+                // Catch-up calculation at 110%
+                const reqMins = (0.95 * realMins - allocatedMins) / (1.10 - 0.95);
+
+                if (reqMins > 0) {
+                    text.innerHTML = `Moyenne: <strong>${avg.toFixed(1)}%</strong>.<br>Faire <strong class="theme-accent">${formatMinutesToHours(reqMins)}</strong> à <strong class="theme-accent">110%</strong> pour atteindre 95%.`;
+                } else {
+                    text.innerHTML = `Moyenne sous 95% (${avg.toFixed(1)}%). Augmenter le rythme.`;
+                }
+            }
+        }
+
+        function updateDayFooter(dayId) {
+            const dayData = appData.days[dayId];
+            let taskMins = 0;
+
+            let assAlloc = 0, assReal = 0;
+            let mcAlloc = 0, mcReal = 0;
+
+            let dayBonusMins = 0;
+
+            dayData.bonifiedTasks.forEach(t => {
+                const realMins = convertToMinutes(t.durationValue, t.unit);
+                const pct = (parseFloat(t.performancePct) || 0) / 100;
+                taskMins += realMins;
+
+                if (t.name === 'Assemblage') {
+                    assReal += realMins;
+                    assAlloc += realMins * pct;
+                } else if (t.name === 'Monte-Charge') {
+                    mcReal += realMins;
+                    let alloc = realMins * pct;
+                    const cases = t.casesCount || 0;
+                    const include = t.includeCases !== undefined ? t.includeCases : true;
+                    if (include && cases > 0) {
+                        alloc += (cases * 5) / 60;
+                    }
+                    mcAlloc += alloc;
+                }
+
+                // Individual task daily bonus contribution
+                if (pct > 1.0) {
+                    const ratio = Math.min(0.20, pct - 1.0);
+                    dayBonusMins += realMins * ratio;
+                }
+            });
+
+            dayData.nonBonifiedTasks.forEach(t => {
+                taskMins += convertToMinutes(t.durationValue, t.unit);
+            });
+
+            const pauseMins = (dayData.break31Count * 31) + (dayData.break17Count * 17);
+            const totalAccountedMins = taskMins + pauseMins;
+            const plannedMins = (dayData.plannedHours || 0) * 60;
+            const diffMins = plannedMins - totalAccountedMins;
+
+            // Daily Bonus Badge Update
+            const dayBonusBadge = document.getElementById(`dayBonusBadge-${dayId}`);
+            if (dayBonusBadge) {
+                const dayBonusHours = dayBonusMins / 60;
+                const dayBonusDollars = dayBonusHours * (appData.hourlyRate || 0);
+                dayBonusBadge.innerHTML = `
+                    <i class="fa-solid fa-gift"></i>
+                    <span>Bonis Jour : ${dayBonusHours.toFixed(2)} h (${dayBonusDollars.toFixed(2)} $)</span>
+                `;
+            }
+
+            // Validation Banner
+            const banner = document.getElementById(`dayValidationBanner-${dayId}`);
+            if (banner) {
+                if (plannedMins === 0) {
+                    banner.className = "mb-4 p-2.5 rounded-lg text-xs font-semibold flex items-center justify-between border theme-card-sub theme-text-muted";
+                    banner.innerHTML = `<span>Journée non planifiée (0h)</span><span>Tâches : ${formatMinutesToHours(taskMins)}</span>`;
+                } else if (diffMins > 0) {
+                    banner.className = "mb-4 p-2.5 rounded-lg text-xs font-semibold flex items-center justify-between border bg-amber-950/40 border-amber-500/50 text-amber-300";
+                    banner.innerHTML = `
+                        <span class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                            Incomplet : Il manque <strong class="underline">${formatMinutesToHours(diffMins)}</strong> pour combler la journée de ${formatMinutesToHours(plannedMins)}
+                        </span>
+                        <span class="text-[11px] opacity-80 hidden sm:inline">(Tâches: ${formatMinutesToHours(taskMins)} + Pauses: ${pauseMins}m)</span>
+                    `;
+                } else if (diffMins < 0) {
+                    banner.className = "mb-4 p-2.5 rounded-lg text-xs font-semibold flex items-center justify-between border bg-blue-950/40 border-blue-500/50 text-blue-300";
+                    banner.innerHTML = `
+                        <span class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-info text-blue-400"></i>
+                            Dépassement : <strong>+${formatMinutesToHours(Math.abs(diffMins))}</strong> de plus que prévu
+                        </span>
+                        <span class="text-[11px] opacity-80 hidden sm:inline">(Total: ${formatMinutesToHours(totalAccountedMins)} / Planifié: ${formatMinutesToHours(plannedMins)})</span>
+                    `;
+                } else {
+                    banner.className = "mb-4 p-2.5 rounded-lg text-xs font-semibold flex items-center justify-between border bg-emerald-950/40 border-emerald-500/50 text-emerald-300";
+                    banner.innerHTML = `
+                        <span class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                            Journée complète (${formatMinutesToHours(plannedMins)} / ${formatMinutesToHours(plannedMins)}) ✓
+                        </span>
+                        <span class="text-[11px] opacity-80 hidden sm:inline">(Tâches: ${formatMinutesToHours(taskMins)} + Pauses: ${pauseMins}m)</span>
+                    `;
+                }
+            }
+
+            const dayTotalEl = document.getElementById(`dayTotalHours-${dayId}`);
+            if (dayTotalEl) {
+                dayTotalEl.innerText = `Total enregistré : ${formatMinutesToHours(totalAccountedMins)} (Tâches: ${formatMinutesToHours(taskMins)} | Pauses: ${pauseMins}m)`;
+            }
+
+            const dayAssEl = document.getElementById(`dayAss-${dayId}`);
+            if (dayAssEl) {
+                dayAssEl.innerText = assReal > 0 ? `${((assAlloc / assReal) * 100).toFixed(1)}%` : '---%';
+            }
+
+            const dayMcEl = document.getElementById(`dayMc-${dayId}`);
+            if (dayMcEl) {
+                dayMcEl.innerText = mcReal > 0 ? `${((mcAlloc / mcReal) * 100).toFixed(1)}%` : '---%';
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('rendement_app_data_v5', JSON.stringify(appData));
+            } catch (e) {
+                console.error("Erreur de sauvegarde", e);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem('rendement_app_data_v5');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    appData.theme = parsed.theme || 'sombre-industriel';
+                    appData.weekStartDate = parsed.weekStartDate || appData.weekStartDate;
+                    appData.hourlyRate = parsed.hourlyRate || 25.00;
+                    if (parsed.days) {
+                        DAYS_OF_WEEK.forEach(day => {
+                            if (parsed.days[day.id]) {
+                                appData.days[day.id] = parsed.days[day.id];
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Erreur de chargement", e);
+            }
+        }
+    </script>
+</body>
+</html>
